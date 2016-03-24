@@ -45,9 +45,11 @@ public class GameScipt : MonoBehaviour {
     private void BuildGrid()
     {
         GUILayout.BeginVertical();
+        GUILayout.FlexibleSpace();
         for (int i = 0; i < rows; i++)
         {
             GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
             for (int j = 0; j < columns; j++)
             {
                 Card card = gridOfCards[i, j];
@@ -56,8 +58,11 @@ public class GameScipt : MonoBehaviour {
                     Debug.Log(card.img);
                 }
             }
+            GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }
+        GUILayout.FlexibleSpace();
+
         GUILayout.EndVertical();
     }
 
