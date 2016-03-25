@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts;
 using System;
+using UnityEngine.SceneManagement;
 
-public class GameScipt : MonoBehaviour
+public class GameScript : MonoBehaviour
 {
     public GUISkin customSkin;
 
@@ -13,7 +13,7 @@ public class GameScipt : MonoBehaviour
     static int rows = 4;
     static int totalCards = columns * rows;
     int matchesNeededToWin = totalCards / 2;
-    int machesMade = 0;
+    int matchesMade = 0;
     int cardWidth = 100;
     int cardHeight = 100;
     bool playerCanClick; //flag to prevent clicking
@@ -23,6 +23,18 @@ public class GameScipt : MonoBehaviour
     List<Card> deckOfCards = new List<Card>();
     List<string> images = new List<string>(new string[] { "elephant", "giraffe", "gorilla", "lion", "moose", "hippopotamus", "sloth", "zebra" });
     Card card;
+    Timer timer;
+
+    public void SetMatch(Card obj)
+    {
+        obj.isMatched = true;
+    }
+
+    public void SetDown(Card obj)
+    {
+        if(obj.isMatched == false)
+        obj.isFaceUp = false;
+    }
 
     void Start()
     {
@@ -43,13 +55,21 @@ public class GameScipt : MonoBehaviour
         }
     }
 
+    void Awake()
+    {
+        timer = GetComponent<Timer>();
+    }
+
     private void BuildDeck()
     {
+        int id = 0;
+
         for (int i = 0; i < 2; i++)
         {
             for (int j = 0; j < totalCards / 2; j++)
             {
-                card = new Card(images.ElementAt(j));
+                card = new Card(images.ElementAt(j), id);
+                id++;
                 deckOfCards.Add(card);
             }
         }
@@ -60,7 +80,27 @@ public class GameScipt : MonoBehaviour
     {
         GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
         BuildGrid();
+        if (playerHasWon) BuildWinPrompt();
         GUILayout.EndArea();
+    }
+
+    private void BuildWinPrompt()
+    {
+        int winPromptW = 100;
+        int winPromptH = 90;
+        float halfScreenW = Screen.width * 0.5f;
+        float halfScreenH = Screen.height * 0.5f;
+        float halfPromptW = winPromptW * 0.5f;
+        float halfPromptH = winPromptH * 0.5f;
+
+        GUI.BeginGroup(new Rect(halfScreenW - halfPromptW,
+            halfScreenH - halfPromptH, winPromptW, winPromptH), "YOU WIN!");
+        if(GUI.Button(new Rect(10,40,80,20),"Play again"))
+        {
+            SceneManager.LoadScene("titleScene");
+        }
+        GUI.EndGroup();
+
     }
 
     private void BuildGrid()
@@ -98,19 +138,48 @@ public class GameScipt : MonoBehaviour
     private void FlipCardFaceUp(Card card)
     {
         card.isFaceUp = true;
-        arrayCardsFlipped.Add(card);
-
-        if (arrayCardsFlipped.Count > 2)//player can flip only two cards at a time
+        if (arrayCardsFlipped.Contains(card) == false)
         {
-            playerCanClick = false;
-            arrayCardsFlipped.ForEach(SetDown);
-            arrayCardsFlipped = new List<Card>();
-            playerCanClick = true;
-        }  
+            arrayCardsFlipped.Add(card);
+            if (arrayCardsFlipped.Count == 2)
+            {
+                if (arrayCardsFlipped[0].img.ToString() == arrayCardsFlipped[1].img.ToString())
+                {
+                    playerCanClick = false;
+                    arrayCardsFlipped.ForEach(SetMatch);
+                    matchesMade++;
+                    if(matchesMade >= matchesNeededToWin)
+                    {
+                        playerHasWon = true;
+                    }
+                    arrayCardsFlipped = new List<Card>();
+                    //playerCanClick = true;
+                }
+            }
+            if (arrayCardsFlipped.Count > 2)
+            {
+                playerCanClick = false;
+                arrayCardsFlipped.ForEach(SetDown);
+                arrayCardsFlipped = new List<Card>();
+                playerCanClick = true;
+            }
+        }
     }
 
-    private void SetDown(Card obj)
+    public class Card : object
     {
-        obj.isFaceUp = false;
+        public bool isFaceUp = false;
+        public bool isMatched = false;
+        public string img;
+        public string imgDown;
+        public int id;
+
+        public Card(string img, int id)
+        {
+            this.img = img;
+            this.id = id;
+            imgDown = "blank-01";
+        }
     }
+
 }
