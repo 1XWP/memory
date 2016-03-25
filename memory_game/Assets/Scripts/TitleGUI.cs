@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
+using UnityEngine.SceneManagement;
 
-public class TitleGUI : MonoBehaviour {
+public class TitleGUI : MonoBehaviour
+{
 
     public GUISkin customSkin;
 
@@ -12,9 +13,9 @@ public class TitleGUI : MonoBehaviour {
         float halfScreenW = Screen.width * 0.5f;
         float halfButtonW = buttonWidth * 0.5f;
         GUI.skin = customSkin;
-        if(GUI.Button (new Rect(halfScreenW-halfButtonW, 250, buttonWidth, buttonHeight), "Play"))
+        if (GUI.Button(new Rect(halfScreenW - halfButtonW, 250, buttonWidth, buttonHeight), "Play"))
         {
-            Application.LoadLevel("gameScene");
+            SceneManager.LoadScene("gameScene");            
         }
     }
 }
