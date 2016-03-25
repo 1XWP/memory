@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts;
+using System;
 
 public class GameScipt : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class GameScipt : MonoBehaviour
     bool playerCanClick; //flag to prevent clicking
     bool playerHasWon = false;
     Card[,] gridOfCards;
-    ArrayList arrayCardsFlipped;
+    public List<Card> arrayCardsFlipped;
     List<Card> deckOfCards = new List<Card>();
     List<string> images = new List<string>(new string[] { "elephant", "giraffe", "gorilla", "lion", "moose", "hippopotamus", "sloth", "zebra" });
     Card card;
@@ -27,7 +28,7 @@ public class GameScipt : MonoBehaviour
     {
         playerCanClick = true;
         gridOfCards = new Card[rows, columns];
-        arrayCardsFlipped = new ArrayList();
+        arrayCardsFlipped = new List<Card>();
         BuildDeck();
         System.Random rnd = new System.Random();
 
@@ -97,5 +98,19 @@ public class GameScipt : MonoBehaviour
     private void FlipCardFaceUp(Card card)
     {
         card.isFaceUp = true;
+        arrayCardsFlipped.Add(card);
+
+        if (arrayCardsFlipped.Count > 2)//player can flip only two cards at a time
+        {
+            playerCanClick = false;
+            arrayCardsFlipped.ForEach(SetDown);
+            arrayCardsFlipped = new List<Card>();
+            playerCanClick = true;
+        }  
+    }
+
+    private void SetDown(Card obj)
+    {
+        obj.isFaceUp = false;
     }
 }
