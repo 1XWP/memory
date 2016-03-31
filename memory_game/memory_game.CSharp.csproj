@@ -68,6 +68,7 @@
     <Compile Include="Assets\Scripts\Card.cs" />
     <Compile Include="Assets\Scripts\GameScript.cs" />
     <Compile Include="Assets\Scripts\MyExtension.cs" />
+    <Compile Include="Assets\Scripts\PlaytimeTimer.cs" />
     <Compile Include="Assets\Scripts\ThreadSafeRandom.cs" />
     <Compile Include="Assets\Scripts\Timer.cs" />
     <Compile Include="Assets\Scripts\TitleGUI.cs" />

@@ -24,6 +24,8 @@ public class GameScript : MonoBehaviour
     List<string> images = new List<string>(new string[] { "elephant", "giraffe", "gorilla", "lion", "moose", "hippopotamus", "sloth", "zebra" });
     Card card;
     Timer timer;
+    PlaytimeTimer playtimeTimer;
+    
 
     public void SetMatch(Card obj)
     {
@@ -58,6 +60,7 @@ public class GameScript : MonoBehaviour
     void Awake()
     {
         timer = GetComponent<Timer>();
+        playtimeTimer = GetComponent<PlaytimeTimer>();
     }
 
     private void BuildDeck()
@@ -126,6 +129,7 @@ public class GameScript : MonoBehaviour
                 if (GUILayout.Button(Resources.Load(img) as Texture2D, GUILayout.Width(cardWidth)))
                 {
                     FlipCardFaceUp(card);
+                    onClick();//start timer on click
                 }
             }
             GUILayout.FlexibleSpace();
@@ -151,6 +155,7 @@ public class GameScript : MonoBehaviour
                     if(matchesMade >= matchesNeededToWin)
                     {
                         playerHasWon = true;
+                        playtimeTimer.Finnish();
                     }
                     arrayCardsFlipped = new List<Card>();
                     //playerCanClick = true;
@@ -166,6 +171,14 @@ public class GameScript : MonoBehaviour
         }
     }
 
+    public void onClick()
+    {
+        if (!playtimeTimer.start)
+        {
+            playtimeTimer.StartTimer();
+        }
+    }
+    
     public class Card : object
     {
         public bool isFaceUp = false;
