@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class Timer : MonoBehaviour
+    public class TimerScript : MonoBehaviour
     {
         public float interval;
 
@@ -33,6 +33,14 @@ namespace Assets.Scripts
                     {
                         gameScript.arrayCardsFlipped.ForEach(gameScript.SetDown);
                     }
+                    for (int i = 0; i < gameScript.rows; i++)
+                    {
+                        for (int j = 0; j < gameScript.columns; j++)
+                        {
+                            gameScript.HideCard(gameScript.gridOfCards[i, j]); 
+                        }
+                    }
+                 
                     gameScript.arrayCardsFlipped = new List<GameScript.Card>();
                     interval = 2;
                 }

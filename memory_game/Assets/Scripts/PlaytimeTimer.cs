@@ -7,6 +7,7 @@ public class PlaytimeTimer : MonoBehaviour {
     private bool finnished = false;
     public bool start = false;
 
+
     static int timerW = 90;
     static int timerH = 600;
     float halfScreenW = Screen.width * 0.5f;
@@ -44,11 +45,13 @@ public class PlaytimeTimer : MonoBehaviour {
         startTime = Time.time;
     }
 
-    void OnGUI()
+    public void DisplayTime()
     {
+        GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
         guiStyle.fontSize = 32;
         guiStyle.normal.textColor = Color.black;
         GUI.Label(new Rect(halfScreenW - halfTimerW,
             halfScreenH - halfTimerH, timerW, timerH), timerString, guiStyle);
+        GUILayout.EndArea();
     }
 }
