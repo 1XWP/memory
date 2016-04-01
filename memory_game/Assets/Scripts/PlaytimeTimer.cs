@@ -29,6 +29,8 @@ public class PlaytimeTimer : MonoBehaviour {
 
             timerString = minutes + ":" + seconds + ":" + milliseconds;
         }
+        if(!start)
+        timerString = "00:00:00";
     }
 
     public void Finnish()
