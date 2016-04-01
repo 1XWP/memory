@@ -126,11 +126,16 @@ public class GameScript : MonoBehaviour
                 {
                     img = card.imgDown;
                 }
+                GUI.enabled = !card.isMatched; //disable button if card is matched
                 if (GUILayout.Button(Resources.Load(img) as Texture2D, GUILayout.Width(cardWidth)))
                 {
-                    FlipCardFaceUp(card);
-                    onClick();//start timer on click
+                    if (playerCanClick)
+                    {
+                        FlipCardFaceUp(card);
+                        onClick();//start timer on click
+                    }
                 }
+                GUI.enabled = true;
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
@@ -158,7 +163,7 @@ public class GameScript : MonoBehaviour
                         playtimeTimer.Finnish();
                     }
                     arrayCardsFlipped = new List<Card>();
-                    //playerCanClick = true;
+                    playerCanClick = true;
                 }
             }
             if (arrayCardsFlipped.Count > 2)
