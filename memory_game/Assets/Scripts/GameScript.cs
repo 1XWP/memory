@@ -79,7 +79,11 @@ public class GameScript : MonoBehaviour
         GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
         TimerAssign();
         BuildGrid();
-        if (playerHasWon) modalPanel.ActivatePanel();
+        if (playerHasWon)
+        {
+            modalPanel.ActivatePanel();
+        }
+
         GUILayout.EndArea();
     }
     
@@ -120,7 +124,6 @@ public class GameScript : MonoBehaviour
                         onClick();//start timer on click
                     }
                 }
-              //  HideCard(card);
                 GUI.enabled = true;
             }
             GUILayout.FlexibleSpace();
@@ -161,13 +164,6 @@ public class GameScript : MonoBehaviour
                 {
                     playerCanClick = false;
                     arrayCardsFlipped.ForEach(SetMatch);
-                    for (int i = 0; i < rows; i++)
-                    {
-                        for (int j = 0; j < columns; j++)
-                        {
-                            HideCard(gridOfCards[i, j]);
-                        }
-                    }
                     matchesMade++;
                     if(matchesMade >= matchesNeededToWin)
                     {
