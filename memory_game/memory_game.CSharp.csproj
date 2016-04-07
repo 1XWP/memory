@@ -74,6 +74,7 @@
     <Compile Include="Assets\Scripts\ThreadSafeRandom.cs" />
     <Compile Include="Assets\Scripts\TimerScript.cs" />
     <Compile Include="Assets\Scripts\TitleGUI.cs" />
+    <Compile Include="Assets\Scripts\WinPrompt.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

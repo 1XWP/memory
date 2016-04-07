@@ -18,7 +18,6 @@ public class GameScript : MonoBehaviour
     int matchesNeededToWin;
     int matchesMade = 0;
     int cardWidth = 100;
-    int cardHeight = 100;
     bool playerCanClick; //flag to prevent clicking
     bool playerHasWon = false;
     public Card[,] gridOfCards;
@@ -28,7 +27,9 @@ public class GameScript : MonoBehaviour
     Card card;
     PlaytimeTimer playtimeTimer;
     ModalPanel modalPanel;
+    public GameObject promptTimeGameObject;
     public GameObject textTimeGameObject;
+    public GameObject messageText;
     private GUIStyle guiStyle = new GUIStyle();
 
     void Start()
@@ -91,6 +92,13 @@ public class GameScript : MonoBehaviour
     {
         Text text = textTimeGameObject.GetComponent<Text>();
         text.text = playtimeTimer.timerString;
+
+        Text promptTimeText = promptTimeGameObject.GetComponent<Text>();
+       promptTimeText.text = playtimeTimer.timerString;
+
+        Text message = messageText.GetComponent<Text>();
+        message.text = "Your time";
+
     }
 
     private void BuildGrid()

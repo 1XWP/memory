@@ -7,4 +7,9 @@ public class GUIScript : MonoBehaviour
     {
         SceneManager.LoadScene("titleScene");
     }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
 }
