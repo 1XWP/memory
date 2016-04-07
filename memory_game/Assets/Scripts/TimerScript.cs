@@ -4,9 +4,10 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    public class Timer : MonoBehaviour
+    public class TimerScript : MonoBehaviour
     {
         public float interval;
+        public float flipInterval;
 
         public GameScript gameScript;
 
@@ -36,6 +37,22 @@ namespace Assets.Scripts
                     gameScript.arrayCardsFlipped = new List<GameScript.Card>();
                     interval = 2;
                 }
+            }
+
+            if (flipInterval > 0)
+            {
+                flipInterval -= Time.deltaTime;
+            }
+            if (flipInterval <= 0)
+            {
+                for (int i = 0; i < gameScript.rows; i++)
+                {
+                    for (int j = 0; j < gameScript.columns; j++)
+                    {
+                        gameScript.HideCard(gameScript.gridOfCards[i, j]);
+                    }
+                }
+                flipInterval = 1;
             }
         }
     }

@@ -4,42 +4,37 @@ using System.Linq;
 using Assets.Scripts;
 using System;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System.Threading;
 
 public class GameScript : MonoBehaviour
 {
     public GUISkin customSkin;
 
-    static int columns = 4;
-    static int rows = 4;
-    static int totalCards = columns * rows;
-    int matchesNeededToWin = totalCards / 2;
+    public  int columns = 4;
+    public  int rows = 4;
+    static int totalCards;
+
+    int matchesNeededToWin;
     int matchesMade = 0;
     int cardWidth = 100;
     int cardHeight = 100;
     bool playerCanClick; //flag to prevent clicking
     bool playerHasWon = false;
-    Card[,] gridOfCards;
+    public Card[,] gridOfCards;
     public List<Card> arrayCardsFlipped;
     List<Card> deckOfCards = new List<Card>();
     List<string> images = new List<string>(new string[] { "elephant", "giraffe", "gorilla", "lion", "moose", "hippopotamus", "sloth", "zebra" });
     Card card;
-    Timer timer;
     PlaytimeTimer playtimeTimer;
-    
-
-    public void SetMatch(Card obj)
-    {
-        obj.isMatched = true;
-    }
-
-    public void SetDown(Card obj)
-    {
-        if(obj.isMatched == false)
-        obj.isFaceUp = false;
-    }
+    ModalPanel modalPanel;
+    public GameObject textTimeGameObject;
+    private GUIStyle guiStyle = new GUIStyle();
 
     void Start()
     {
+        totalCards = columns * rows;
+        matchesNeededToWin = totalCards / 2;
         playerCanClick = true;
         gridOfCards = new Card[rows, columns];
         arrayCardsFlipped = new List<Card>();
@@ -59,8 +54,8 @@ public class GameScript : MonoBehaviour
 
     void Awake()
     {
-        timer = GetComponent<Timer>();
         playtimeTimer = GetComponent<PlaytimeTimer>();
+        modalPanel = GetComponent<ModalPanel>();
     }
 
     private void BuildDeck()
@@ -82,32 +77,26 @@ public class GameScript : MonoBehaviour
     void OnGUI()
     {
         GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
+        TimerAssign();
         BuildGrid();
-        if (playerHasWon) BuildWinPrompt();
+        if (playerHasWon)
+        {
+            modalPanel.ActivatePanel();
+        }
+
         GUILayout.EndArea();
     }
-
-    private void BuildWinPrompt()
+    
+    void TimerAssign()
     {
-        int winPromptW = 100;
-        int winPromptH = 90;
-        float halfScreenW = Screen.width * 0.5f;
-        float halfScreenH = Screen.height * 0.5f;
-        float halfPromptW = winPromptW * 0.5f;
-        float halfPromptH = winPromptH * 0.5f;
-
-        GUI.BeginGroup(new Rect(halfScreenW - halfPromptW,
-            halfScreenH - halfPromptH, winPromptW, winPromptH), "YOU WIN!");
-        if(GUI.Button(new Rect(10,40,80,20),"Play again"))
-        {
-            SceneManager.LoadScene("titleScene");
-        }
-        GUI.EndGroup();
-
+        Text text = textTimeGameObject.GetComponent<Text>();
+        text.text = playtimeTimer.timerString;
     }
 
     private void BuildGrid()
     {
+        guiStyle.fixedHeight = 100;
+        guiStyle.fixedWidth = 100; 
         GUILayout.BeginVertical();
         GUILayout.FlexibleSpace();
         for (int i = 0; i < rows; i++)
@@ -127,7 +116,7 @@ public class GameScript : MonoBehaviour
                     img = card.imgDown;
                 }
                 GUI.enabled = !card.isMatched; //disable button if card is matched
-                if (GUILayout.Button(Resources.Load(img) as Texture2D, GUILayout.Width(cardWidth)))
+                if (GUILayout.Button(Resources.Load(img) as Texture2D, guiStyle, GUILayout.Width(cardWidth)))
                 {
                     if (playerCanClick)
                     {
@@ -142,6 +131,25 @@ public class GameScript : MonoBehaviour
         }
         GUILayout.FlexibleSpace();
         GUILayout.EndVertical();
+    }
+
+    public void SetMatch(Card obj)
+    {
+        obj.isMatched = true;
+    }
+
+    public void HideCard(Card obj)
+    {
+        if (obj.isMatched)
+        {
+            obj.img = null;
+        }
+    }
+
+    public void SetDown(Card obj)
+    {
+        if (!obj.isMatched)
+            obj.isFaceUp = false;
     }
 
     private void FlipCardFaceUp(Card card)
@@ -189,6 +197,7 @@ public class GameScript : MonoBehaviour
         public bool isFaceUp = false;
         public bool isMatched = false;
         public string img;
+        public string imgTransp;
         public string imgDown;
         public int id;
 
@@ -197,6 +206,7 @@ public class GameScript : MonoBehaviour
             this.img = img;
             this.id = id;
             imgDown = "blank-01";
+            imgTransp = "transp";
         }
     }
 
