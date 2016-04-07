@@ -35,7 +35,7 @@ namespace Assets.Scripts
                         gameScript.arrayCardsFlipped.ForEach(gameScript.SetDown);
                     }
                     gameScript.arrayCardsFlipped = new List<GameScript.Card>();
-                    interval = 2;
+                    interval = 1.5f;
                 }
             }
 
@@ -52,7 +52,7 @@ namespace Assets.Scripts
                         gameScript.HideCard(gameScript.gridOfCards[i, j]);
                     }
                 }
-                flipInterval = 1;
+                flipInterval = 2;
             }
         }
     }
