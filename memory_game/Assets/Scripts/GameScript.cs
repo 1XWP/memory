@@ -75,6 +75,36 @@ public class GameScript : MonoBehaviour
     GUIStyle guiStyle = new GUIStyle();
 
     /// <summary>
+    /// Function start timer if it is not started
+    /// </summary>
+    public void StartTimer()
+    {
+        if (!playtimeTimer.start)
+        {
+            playtimeTimer.StartTimer();
+        }
+    }
+
+    public void SetMatch(Card obj)
+    {
+        obj.isMatched = true;
+    }
+
+    public void HideCard(Card obj)
+    {
+        if (obj.isMatched)
+        {
+            obj.img = null;
+        }
+    }
+
+    public void SetDown(Card obj)
+    {
+        if (!obj.isMatched)
+            obj.isFaceUp = false;
+    }
+
+    /// <summary>
     /// Function called on start.
     /// <remarks>
     /// Function initialize fields. 
@@ -283,36 +313,6 @@ public class GameScript : MonoBehaviour
         {
             playerHasWon = true;
             playtimeTimer.Finnish();
-        }
-    }
-
-    public void SetMatch(Card obj)
-    {
-        obj.isMatched = true;
-    }
-
-    public void HideCard(Card obj)
-    {
-        if (obj.isMatched)
-        {
-            obj.img = null;
-        }
-    }
-
-    public void SetDown(Card obj)
-    {
-        if (!obj.isMatched)
-            obj.isFaceUp = false;
-    }
-
-    /// <summary>
-    /// Function start timer if it is not started
-    /// </summary>
-    public void StartTimer()
-    {
-        if (!playtimeTimer.start)
-        {
-            playtimeTimer.StartTimer();
         }
     }
 

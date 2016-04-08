@@ -1,13 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Assets.Scripts
-{
+{   
+    /// <summary>
+    /// Class providing method for timer assigned to GameScreen obejct
+    /// <remarks>
+    /// Timer used for delay GUI actions
+    /// </remarks>
+    /// </summary>
     public class TimerScript : MonoBehaviour
-    {
-        public float interval;
-        public float flipInterval;
+    {   
+        /// <summary>
+        /// Holds delay value for flipping back card 
+        /// </summary>
+        public float flipBackInterval;
+
+        /// <summary>
+        /// Holds delay value for hiding matched cards
+        /// </summary>
+        public float hideInterval;
 
         public GameScript gameScript;
 
@@ -18,32 +30,20 @@ namespace Assets.Scripts
 
         public void Update()
         {
-            if (gameScript.cardsFlipped.Count == 2)
-            {
-                if (interval > 0)
-                {
-                    interval -= Time.deltaTime;
-                }
-                if (interval <= 0)
-                {
-                    if (gameScript.cardsFlipped[0].id.ToString().Equals(gameScript.cardsFlipped[1].id.ToString()))
-                    {
-                        gameScript.cardsFlipped.ForEach(gameScript.SetMatch);
-                    }
-                    else
-                    {
-                        gameScript.cardsFlipped.ForEach(gameScript.SetDown);
-                    }
-                    gameScript.cardsFlipped = new List<GameScript.Card>();
-                    interval = 1.5f;
-                }
-            }
+            DelayFlippingBackCard();
+            DelayHidingMatched();
+        }
 
-            if (flipInterval > 0)
+        /// <summary>
+        /// Function delay hiding matched cards
+        /// </summary>
+        private void DelayHidingMatched()
+        {
+            if (hideInterval > 0)
             {
-                flipInterval -= Time.deltaTime;
+                hideInterval -= Time.deltaTime;
             }
-            if (flipInterval <= 0)
+            if (hideInterval <= 0)
             {
                 for (int i = 0; i < gameScript.rows; i++)
                 {
@@ -52,7 +52,30 @@ namespace Assets.Scripts
                         gameScript.HideCard(gameScript.gridOfCards[i, j]);
                     }
                 }
-                flipInterval = 2;
+                hideInterval = 2;
+            }
+        }
+
+        /// <summary>
+        /// Function delay flipping back unmatched card
+        /// </summary>
+        private void DelayFlippingBackCard()
+        {
+            if (gameScript.cardsFlipped.Count == 2)
+            {
+                if (flipBackInterval > 0)
+                {
+                    flipBackInterval -= Time.deltaTime;
+                }
+                if (flipBackInterval <= 0)
+                {
+                    if (!gameScript.cardsFlipped[0].id.ToString().Equals(gameScript.cardsFlipped[1].id.ToString()))
+                    {
+                        gameScript.cardsFlipped.ForEach(gameScript.SetDown);                   
+                    }                
+                    gameScript.cardsFlipped = new List<GameScript.Card>();
+                    flipBackInterval = 1.5f;
+                }
             }
         }
     }

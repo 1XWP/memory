@@ -3,6 +3,9 @@ using System.Threading;
 
 namespace Assets.Scripts
 {
+    /// <summary>
+    /// Static class for thread safe random
+    /// </summary>
     public static class ThreadSafeRandom
     {
         [ThreadStatic]
