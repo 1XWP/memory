@@ -34,3 +34,6 @@ Icon?
 ehthumbs.db
 [Tt]humbs.db
 memory_game/player_win_x86.pdb
+memory_game/player_win_x86_s.pdb
+memory_game/player_win_development_x86.pdb
+memory_game/player_win_development_x86_s.pdb
