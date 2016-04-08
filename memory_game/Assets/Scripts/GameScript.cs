@@ -2,63 +2,120 @@
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts;
-using System;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using System.Threading;
 
+/// <summary>
+/// Main class of game assigned to GameScreen game object.
+/// </summary>
 public class GameScript : MonoBehaviour
 {
-    public GUISkin customSkin;
+    public GameObject promptTimeText;
+    public GameObject timeText;
+    public GameObject messageText;
 
-    public  int columns = 4;
-    public  int rows = 4;
+    /// <summary>
+    /// Store dimensions of cards grid.
+    /// </summary>
+    public int columns = 4;
+    public int rows = 4;
+
+    /// <summary>
+    /// Array of cards displayed on screen.
+    /// </summary>
+    public Card[,] gridOfCards;
+
+    /// <summary>
+    /// List for storing two curently flipped cards.
+    /// </summary>
+    public List<Card> cardsFlipped;
+
+    /// <summary>
+    /// Store amount of cards used for build grid.
+    /// </summary>
     static int totalCards;
 
+    /// <summary>
+    /// Store amount of matches needed to win game.
+    /// </summary>
     int matchesNeededToWin;
+
+    /// <summary>
+    /// Store amount of matches made.
+    /// </summary>
     int matchesMade = 0;
+
+    /// <summary>
+    /// Width of card in pixels.
+    /// </summary>
     int cardWidth = 100;
-    bool playerCanClick; //flag to prevent clicking
+
+    /// <summary>
+    /// Flag to prevent clicking.
+    /// </summary>
+    bool playerCanClick; 
+
+    /// <summary>
+    /// Flag indicating if player has won.
+    /// </summary>
     bool playerHasWon = false;
-    public Card[,] gridOfCards;
-    public List<Card> arrayCardsFlipped;
+
+    /// <summary>
+    /// List for building deck of cards.
+    /// </summary>
     List<Card> deckOfCards = new List<Card>();
+
+    /// <summary>
+    /// List of images names. 
+    /// </summary>
     List<string> images = new List<string>(new string[] { "elephant", "giraffe", "gorilla", "lion", "moose", "hippopotamus", "sloth", "zebra" });
+
     Card card;
     PlaytimeTimer playtimeTimer;
     ModalPanel modalPanel;
-    public GameObject promptTimeGameObject;
-    public GameObject textTimeGameObject;
-    public GameObject messageText;
-    private GUIStyle guiStyle = new GUIStyle();
+    GUIStyle guiStyle = new GUIStyle();
 
+    /// <summary>
+    /// Function called on start.
+    /// <remarks>
+    /// Function initialize fields. 
+    /// </remarks>
+    /// </summary>
     void Start()
     {
         totalCards = columns * rows;
         matchesNeededToWin = totalCards / 2;
         playerCanClick = true;
         gridOfCards = new Card[rows, columns];
-        arrayCardsFlipped = new List<Card>();
-        BuildDeck();
-        System.Random rnd = new System.Random();
-
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < columns; j++)
-            {
-                int someNum = rnd.Next(0, deckOfCards.Count);
-                gridOfCards[i, j] = deckOfCards.ElementAt(someNum);
-                deckOfCards.RemoveAt(someNum);
-            }
-        }
-    }
-
-    void Awake()
-    {
+        cardsFlipped = new List<Card>();
         playtimeTimer = GetComponent<PlaytimeTimer>();
         modalPanel = GetComponent<ModalPanel>();
+        BuildDeck();
+        InitializeGridOfCards();
     }
 
+    /// <summary>
+    /// Function called on every frame.
+    /// <remarks>
+    /// Building UI elements is placed here.
+    /// </remarks>
+    /// </summary>
+    void OnGUI()
+    {
+        GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
+        TextAssign();
+        DisplayGrid();
+        if (playerHasWon)
+        {
+            modalPanel.ActivatePanel();
+        }
+        GUILayout.EndArea();
+    }
+
+    /// <summary>
+    /// Function building deck of cards from images.
+    /// <remarks>
+    /// Two different cards of every image are created. Builded deck are shuffled. </remarks>
+    /// </summary>
     private void BuildDeck()
     {
         int id = 0;
@@ -75,36 +132,49 @@ public class GameScript : MonoBehaviour
         deckOfCards.Shuffle();
     }
 
-    void OnGUI()
+    /// <summary>
+    /// Function initialize elemets of GridOfCards with random picked element from deckOfCards
+    /// </summary>
+    private void InitializeGridOfCards()
     {
-        GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
-        TimerAssign();
-        BuildGrid();
-        if (playerHasWon)
+        System.Random rnd = new System.Random();
+
+        for (int i = 0; i < rows; i++)
         {
-            modalPanel.ActivatePanel();
+            for (int j = 0; j < columns; j++)
+            {
+                int someNum = rnd.Next(0, deckOfCards.Count);
+                gridOfCards[i, j] = deckOfCards.ElementAt(someNum);
+                deckOfCards.RemoveAt(someNum);
+            }
         }
-
-        GUILayout.EndArea();
     }
-    
-    void TimerAssign()
-    {
-        Text text = textTimeGameObject.GetComponent<Text>();
-        text.text = playtimeTimer.timerString;
 
-        Text promptTimeText = promptTimeGameObject.GetComponent<Text>();
-       promptTimeText.text = playtimeTimer.timerString;
+    /// <summary>
+    /// Function assign text of PromptTime, Time and Message components
+    /// </summary>
+    void TextAssign()
+    {
+        Text time = timeText.GetComponent<Text>();
+        time.text = playtimeTimer.timerString;
+
+        Text prompt = promptTimeText.GetComponent<Text>();
+        prompt.text = playtimeTimer.timerString;
 
         Text message = messageText.GetComponent<Text>();
         message.text = "Your time";
-
     }
 
-    private void BuildGrid()
+    /// <summary>
+    /// Function for displaying GridOfCards.
+    /// <remarks>
+    /// Every card is dispalyed with proper image depending on card state.
+    /// </remarks>
+    /// </summary>
+    private void DisplayGrid()
     {
         guiStyle.fixedHeight = 100;
-        guiStyle.fixedWidth = 100; 
+        guiStyle.fixedWidth = 100;
         GUILayout.BeginVertical();
         GUILayout.FlexibleSpace();
         for (int i = 0; i < rows; i++)
@@ -123,22 +193,97 @@ public class GameScript : MonoBehaviour
                 {
                     img = card.imgDown;
                 }
-                GUI.enabled = !card.isMatched; //disable button if card is matched
-                if (GUILayout.Button(Resources.Load(img) as Texture2D, guiStyle, GUILayout.Width(cardWidth)))
-                {
-                    if (playerCanClick)
-                    {
-                        FlipCardFaceUp(card);
-                        onClick();//start timer on click
-                    }
-                }
-                GUI.enabled = true;
+                DisplayCard(card, img);
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
         }
         GUILayout.FlexibleSpace();
         GUILayout.EndVertical();
+    }
+
+    /// <summary>
+    /// Function display single card which can be flipped.
+    /// <remarks>
+    /// Buttons are disabled if cards are matched.
+    /// Timer is started on first click.
+    /// </remarks>
+    /// </summary>
+    /// <param name="card">Card to display</param>
+    /// <param name="img">Image name</param>
+    private void DisplayCard(Card card, string img)
+    {
+        GUI.enabled = !card.isMatched;
+        if (GUILayout.Button(Resources.Load(img) as Texture2D, guiStyle, GUILayout.Width(cardWidth)))
+        {
+            if (playerCanClick)
+            {
+                FlipCardFaceUp(card);
+                StartTimer();
+            }
+        }
+        GUI.enabled = true;
+    }
+
+    /// <summary>
+    /// Function change card state to faceUp.
+    /// <remarks>
+    /// Only two cards can be fliped at a time.
+    /// </remarks>
+    /// </summary>
+    /// <param name="card">Card to flip</param>
+    private void FlipCardFaceUp(Card card)
+    {
+        card.isFaceUp = true;
+        if (cardsFlipped.Contains(card) == false)
+        {
+            cardsFlipped.Add(card);
+            if (cardsFlipped.Count == 2)
+            {
+                CheckIfMatched();
+            }
+            if (cardsFlipped.Count > 2)
+            {
+                playerCanClick = false;
+                cardsFlipped.ForEach(SetDown);
+                cardsFlipped = new List<Card>();
+                playerCanClick = true;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Function check if two flipped cards are matched.
+    /// <remarks>
+    /// Img string of cards is checked.
+    /// </remarks>
+    /// </summary>
+    private void CheckIfMatched()
+    {
+        if (cardsFlipped[0].img.ToString() == cardsFlipped[1].img.ToString())
+        {
+            playerCanClick = false;
+            cardsFlipped.ForEach(SetMatch);
+            matchesMade++;
+            CheckIfWin();
+            cardsFlipped = new List<Card>();
+            playerCanClick = true;
+        }
+    }
+
+    /// <summary>
+    /// Function check if player has won.
+    /// <remarks>
+    /// Timer is stopped on win.
+    /// </remarks>
+    /// </summary>
+    private void CheckIfWin()
+    {
+        if (matchesMade >= matchesNeededToWin)
+        {
+            playerHasWon = true;
+            playtimeTimer.Finnish();
+        }
     }
 
     public void SetMatch(Card obj)
@@ -160,52 +305,25 @@ public class GameScript : MonoBehaviour
             obj.isFaceUp = false;
     }
 
-    private void FlipCardFaceUp(Card card)
-    {
-        card.isFaceUp = true;
-        if (arrayCardsFlipped.Contains(card) == false)
-        {
-            arrayCardsFlipped.Add(card);
-            if (arrayCardsFlipped.Count == 2)
-            {
-                if (arrayCardsFlipped[0].img.ToString() == arrayCardsFlipped[1].img.ToString())
-                {
-                    playerCanClick = false;
-                    arrayCardsFlipped.ForEach(SetMatch);
-                    matchesMade++;
-                    if(matchesMade >= matchesNeededToWin)
-                    {
-                        playerHasWon = true;
-                        playtimeTimer.Finnish();
-                    }
-                    arrayCardsFlipped = new List<Card>();
-                    playerCanClick = true;
-                }
-            }
-            if (arrayCardsFlipped.Count > 2)
-            {
-                playerCanClick = false;
-                arrayCardsFlipped.ForEach(SetDown);
-                arrayCardsFlipped = new List<Card>();
-                playerCanClick = true;
-            }
-        }
-    }
-
-    public void onClick()
+    /// <summary>
+    /// Function start timer if it is not started
+    /// </summary>
+    public void StartTimer()
     {
         if (!playtimeTimer.start)
         {
             playtimeTimer.StartTimer();
         }
     }
-    
+
+    /// <summary>
+    /// Class representing Card object
+    /// </summary>
     public class Card : object
     {
         public bool isFaceUp = false;
         public bool isMatched = false;
         public string img;
-        public string imgTransp;
         public string imgDown;
         public int id;
 
@@ -214,8 +332,6 @@ public class GameScript : MonoBehaviour
             this.img = img;
             this.id = id;
             imgDown = "blank-01";
-            imgTransp = "transp";
         }
     }
-
 }

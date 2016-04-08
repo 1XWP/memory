@@ -18,7 +18,7 @@ namespace Assets.Scripts
 
         public void Update()
         {
-            if (gameScript.arrayCardsFlipped.Count == 2)
+            if (gameScript.cardsFlipped.Count == 2)
             {
                 if (interval > 0)
                 {
@@ -26,15 +26,15 @@ namespace Assets.Scripts
                 }
                 if (interval <= 0)
                 {
-                    if (gameScript.arrayCardsFlipped[0].id.ToString().Equals(gameScript.arrayCardsFlipped[1].id.ToString()))
+                    if (gameScript.cardsFlipped[0].id.ToString().Equals(gameScript.cardsFlipped[1].id.ToString()))
                     {
-                        gameScript.arrayCardsFlipped.ForEach(gameScript.SetMatch);
+                        gameScript.cardsFlipped.ForEach(gameScript.SetMatch);
                     }
                     else
                     {
-                        gameScript.arrayCardsFlipped.ForEach(gameScript.SetDown);
+                        gameScript.cardsFlipped.ForEach(gameScript.SetDown);
                     }
-                    gameScript.arrayCardsFlipped = new List<GameScript.Card>();
+                    gameScript.cardsFlipped = new List<GameScript.Card>();
                     interval = 1.5f;
                 }
             }
