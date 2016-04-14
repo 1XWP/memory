@@ -67,7 +67,7 @@ public class GameScript : MonoBehaviour
     /// <summary>
     /// List of images names. 
     /// </summary>
-    List<string> images = new List<string>(new string[] { "elephant", "giraffe", "gorilla", "lion", "moose", "hippopotamus", "sloth", "zebra" });
+    List<string> images = new List<string>(new string[] { "1", "2", "3", "4", "5", "6", "7", "8" });
 
     Card card;
     PlaytimeTimer playtimeTimer;
