@@ -47,7 +47,7 @@ public class GameScript : MonoBehaviour
     /// <summary>
     /// Width of card in pixels.
     /// </summary>
-    int cardWidth = 100;
+    int cardWidth = 220;
 
     /// <summary>
     /// Flag to prevent clicking.
@@ -72,7 +72,7 @@ public class GameScript : MonoBehaviour
     Card card;
     PlaytimeTimer playtimeTimer;
     ModalPanel modalPanel;
-    GUIStyle guiStyle = new GUIStyle();
+    public GUIStyle guiStyle = new GUIStyle();
 
     /// <summary>
     /// Function start timer if it is not started
@@ -203,8 +203,8 @@ public class GameScript : MonoBehaviour
     /// </summary>
     private void DisplayGrid()
     {
-        guiStyle.fixedHeight = 100;
-        guiStyle.fixedWidth = 100;
+        guiStyle.fixedHeight = 220;
+        guiStyle.fixedWidth = 220;
         GUILayout.BeginVertical();
         GUILayout.FlexibleSpace();
         for (int i = 0; i < rows; i++)
@@ -331,7 +331,7 @@ public class GameScript : MonoBehaviour
         {
             this.img = img;
             this.id = id;
-            imgDown = "blank-01";
+            imgDown = "blank";
         }
     }
 }
