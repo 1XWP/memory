@@ -47,7 +47,7 @@ public class GameScript : MonoBehaviour
     /// <summary>
     /// Width of card in pixels.
     /// </summary>
-    int cardWidth = Screen.height/4;
+    int cardWidth = Screen.height/5;
 
     /// <summary>
     /// Flag to prevent clicking.
@@ -203,8 +203,8 @@ public class GameScript : MonoBehaviour
     /// </summary>
     private void DisplayGrid()
     {
-        guiStyle.fixedHeight = (Screen.height / 4);
-        guiStyle.fixedWidth = (Screen.width / 4);
+        guiStyle.fixedHeight = (Screen.height / 5);
+        guiStyle.fixedWidth = (Screen.width / 5);
         GUILayout.BeginVertical();
         GUILayout.FlexibleSpace();
         for (int i = 0; i < rows; i++)
